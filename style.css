@@ -1,0 +1,56 @@
+:root {
+  --bg: #f5f7f4;
+  --card: #ffffff;
+  --text: #1f2a24;
+  --muted: #5d6b63;
+  --line: #dde3de;
+  --accent: #1f7a4d;
+  --accent-soft: #e3f2ea;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141a17;
+    --card: #1d2520;
+    --text: #e6ece8;
+    --muted: #9aa8a0;
+    --line: #2e3a33;
+    --accent: #4cc38a;
+    --accent-soft: #1f3a2c;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  line-height: 1.7;
+  font-size: 16px;
+}
+a { color: var(--accent); }
+header.site { background: var(--accent); color: #fff; padding: 28px 16px 22px; }
+header.site .brand { color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700; }
+header.site p { margin: 4px 0 0; opacity: .92; }
+main { max-width: 760px; margin: 0 auto; padding: 16px; }
+section { margin-bottom: 28px; }
+h2 { font-size: 1.15rem; margin: 0 0 10px; }
+.menu-card, .post-row {
+  display: block; text-decoration: none; color: var(--text);
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 10px;
+}
+.menu-card:hover, .post-row:hover { background: var(--accent-soft); }
+.menu-card b { display: block; font-size: 1.05rem; }
+.menu-card span { color: var(--muted); font-size: .92rem; }
+.post-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+.post-row time { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+.tag { font-size: .75rem; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 6px; }
+article { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 18px; }
+article h1 { font-size: 1.4rem; margin: 0 0 4px; line-height: 1.4; }
+article .meta { color: var(--muted); font-size: .88rem; margin-bottom: 18px; }
+.back { display: inline-block; margin-bottom: 12px; text-decoration: none; }
+footer.site { color: var(--muted); font-size: .85rem; text-align: center; padding: 20px 16px 40px; }
+@media (max-width: 480px) {
+  .post-row { grid-template-columns: 1fr; gap: 2px; }
+  .tag { justify-self: start; }
+}

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>국토종주 자전거길</title>
+<style>
+  :root {
+    --bg: #f5f7f4;
+    --card: #ffffff;
+    --text: #1f2a24;
+    --muted: #5d6b63;
+    --line: #dde3de;
+    --accent: #1f7a4d;
+    --accent-soft: #e3f2ea;
+    --warn: #a15c00;
+    --warn-soft: #fff3df;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141a17;
+      --card: #1d2520;
+      --text: #e6ece8;
+      --muted: #9aa8a0;
+      --line: #2e3a33;
+      --accent: #4cc38a;
+      --accent-soft: #1f3a2c;
+      --warn: #f0b45a;
+      --warn-soft: #3a2e1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 28px 16px 22px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 1.6rem; }
+  header p { margin: 0; opacity: .92; }
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 4px; overflow-x: auto;
+    padding: 8px 12px;
+  }
+  nav a {
+    flex: 0 0 auto;
+    padding: 8px 12px; border-radius: 999px;
+    color: var(--text); text-decoration: none; font-size: .95rem;
+    background: var(--bg);
+  }
+  nav a:active, nav a:hover { background: var(--accent-soft); }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  section { margin-bottom: 28px; scroll-margin-top: 64px; }
+  h2 { font-size: 1.25rem; margin: 0 0 12px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .note {
+    background: var(--warn-soft); color: var(--text);
+    border-left: 4px solid var(--warn);
+    padding: 10px 12px; border-radius: 8px; font-size: .92rem;
+    margin-bottom: 14px;
+  }
+  .est {
+    display: inline-block; font-size: .72rem; font-weight: 600;
+    color: var(--warn); border: 1px solid var(--warn);
+    border-radius: 4px; padding: 0 5px; margin-left: 4px; vertical-align: middle;
+  }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat { text-align: center; }
+  .stat b { display: block; font-size: 1.4rem; color: var(--accent); }
+  .stat span { font-size: .85rem; color: var(--muted); }
+  .seg-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .seg-head h3 { margin: 0; font-size: 1.05rem; }
+  .km { font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .route { color: var(--muted); font-size: .92rem; margin: 4px 0 8px; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  ul.check { list-style: none; padding: 0; margin: 8px 0 0; }
+  ul.check li { padding: 8px 0; border-top: 1px solid var(--line); }
+  ul.check label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  ul.check input { width: 22px; height: 22px; accent-color: var(--accent); flex: 0 0 auto; }
+  ul.check small { color: var(--muted); display: block; }
+  details summary { cursor: pointer; font-weight: 600; font-size: 1.05rem; }
+  details[open] summary { margin-bottom: 4px; }
+  .supply li { margin-bottom: 6px; }
+  form { display: grid; gap: 10px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label.f { display: grid; gap: 4px; font-size: .9rem; color: var(--muted); }
+  input, select, textarea, button { font: inherit; }
+  input[type=date], input[type=number], select, textarea {
+    width: 100%; padding: 10px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--bg); color: var(--text);
+  }
+  button {
+    padding: 12px; border: 0; border-radius: 8px;
+    background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;
+  }
+  button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 6px 10px; font-weight: 500; }
+  .log-item { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .log-item p { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+  .empty { color: var(--muted); text-align: center; padding: 12px; }
+  footer { color: var(--muted); font-size: .85rem; text-align: center; padding: 20px 16px 40px; }
+  footer a { color: var(--accent); }
+  @media (max-width: 480px) {
+    .row { grid-template-columns: 1fr; }
+    .stat b { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>국토종주 자전거길</h1>
+  <p>인천 아라서해갑문에서 부산 낙동강하굿둑까지, 약 633km</p>
+</header>
+
+<nav>
+  <a href="../index.html">← 블로그</a>
+  <a href="#summary">요약</a>
+  <a href="#segments">구간</a>
+  <a href="#stamps">인증센터</a>
+  <a href="#supply">보급</a>
+  <a href="#log">내 기록</a>
+  <a href="#tips">주의</a>
+</nav>
+
+<main>
+
+  <section id="summary">
+    <div class="note">
+      거리와 인증센터 위치는 공개 자료를 바탕으로 정리한 <b>대략값</b>입니다. <span class="est">추정</span> 표시는 특히 확인이 필요한 항목입니다.
+      인증센터는 이전·폐지되는 경우가 있으니 출발 전 행정안전부 <b>자전거행복나눔</b> 사이트나 인증 앱에서 최신 정보를 꼭 확인하세요.
+    </div>
+    <div class="card summary">
+      <div class="stat"><b id="sumTotal">633</b><span>전체 km</span></div>
+      <div class="stat"><b id="sumDone">0</b><span>내가 달린 km</span></div>
+      <div class="stat"><b id="sumStamp">0/0</b><span>인증 완료</span></div>
+    </div>
+    <div class="card">
+      <div class="seg-head"><span>전체 진행률</span><span class="km" id="sumPct">0%</span></div>
+      <div class="bar" style="margin-top:8px"><i id="sumBar" style="width:0%"></i></div>
+    </div>
+  </section>
+
+  <section id="segments">
+    <h2>구간별 거리</h2>
+    <div id="segList"></div>
+  </section>
+
+  <section id="stamps">
+    <h2>인증센터 체크</h2>
+    <p style="color:var(--muted);margin-top:-6px;font-size:.92rem">도장 찍은 곳을 체크하면 이 브라우저에 저장됩니다.</p>
+    <div id="stampList"></div>
+  </section>
+
+  <section id="supply">
+    <h2>보급 포인트</h2>
+    <div class="note">편의점·식당 정보는 시기에 따라 바뀝니다. 아래는 큰 마을 기준 <span class="est">추정</span> 안내입니다. 특히 문경~상주, 합천~남지 구간은 상점 간격이 길어 물을 넉넉히 챙기는 편이 안전합니다.</div>
+    <div id="supplyList"></div>
+  </section>
+
+  <section id="log">
+    <h2>내 주행 기록</h2>
+    <div class="card">
+      <form id="logForm">
+        <div class="row">
+          <label class="f">날짜<input type="date" id="fDate" required></label>
+          <label class="f">거리 (km)<input type="number" id="fKm" min="0" step="0.1" inputmode="decimal" placeholder="예: 45" required></label>
+        </div>
+        <label class="f">구간<select id="fSeg"></select></label>
+        <label class="f">메모<textarea id="fMemo" rows="2" placeholder="날씨, 컨디션, 먹은 것 등"></textarea></label>
+        <button type="submit">기록 추가</button>
+      </form>
+    </div>
+    <div id="logList"></div>
+  </section>
+
+  <section id="tips">
+    <h2>주행 전 주의할 점</h2>
+    <div class="card">
+      <ul style="margin:0;padding-left:20px">
+        <li>큰 고개: 새재길의 <b>소조령·이화령</b>, 낙동강길의 <b>박진고개·영아지고개</b> <span class="est">추정</span>. 무리하지 말고 끌바도 선택지입니다.</li>
+        <li>무릎이 불편하면 오르막에서 기어를 가볍게 두고 페달 회전수를 높이는 쪽이 부담이 적습니다. 안장 높이가 낮으면 무릎 앞쪽에 무리가 가기 쉽습니다.</li>
+        <li>장거리 라이딩 중 허리 통증이 오면 1~2시간마다 내려서 가볍게 스트레칭하세요.</li>
+        <li>하천변 구간은 그늘이 적습니다. 여름엔 이른 아침 출발을 권합니다.</li>
+        <li>인증수첩은 인증센터 근처나 일부 판매처에서 구입합니다. 판매처는 바뀔 수 있으니 미리 확인하세요.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  개인 취미로 만든 정보 정리 페이지입니다. 공식 정보는 <a href="https://www.bike.go.kr" target="_blank" rel="noopener">자전거행복나눔(bike.go.kr)</a>에서 확인하세요.
+</footer>
+
+<script>
+// ===== 데이터 (필요하면 여기 숫자/이름만 고치면 됩니다) =====
+// est: true 는 화면에 "추정" 표시가 붙습니다.
+const SEGMENTS = [
+  { id: "ara", name: "아라자전거길", from: "인천 아라서해갑문", to: "아라한강갑문", km: 21,
+    stamps: [
+      { name: "아라서해갑문" },
+      { name: "아라한강갑문" }
+    ] },
+  { id: "han", name: "한강종주자전거길", from: "아라한강갑문", to: "팔당대교 부근", km: 56,
+    stamps: [
+      { name: "여의도 서울마리나" },
+      { name: "광나루 자전거공원" },
+      { name: "뚝섬 전망문화콤플렉스", est: true, memo: "운영 여부 확인 필요" }
+    ] },
+  { id: "nam", name: "남한강자전거길", from: "팔당대교", to: "충주 탄금대", km: 132,
+    stamps: [
+      { name: "능내역 (밝은광장)", est: true },
+      { name: "양평군립미술관" },
+      { name: "이포보" },
+      { name: "여주보" },
+      { name: "강천보" },
+      { name: "비내섬" },
+      { name: "충주 탄금대" }
+    ] },
+  { id: "saejae", name: "새재자전거길", from: "충주 탄금대", to: "상주 상풍교", km: 100, est: true,
+    stamps: [
+      { name: "수안보 온천" },
+      { name: "이화령 휴게소" },
+      { name: "문경 불정역" }
+    ] },
+  { id: "nak", name: "낙동강자전거길", from: "상주 상풍교", to: "부산 낙동강하굿둑", km: 324, est: true,
+    stamps: [
+      { name: "상풍교" },
+      { name: "상주보" },
+      { name: "낙단보" },
+      { name: "구미보" },
+      { name: "칠곡보" },
+      { name: "강정고령보" },
+      { name: "달성보" },
+      { name: "무심사", est: true },
+      { name: "합천창녕보" },
+      { name: "박진교", est: true },
+      { name: "창녕함안보" },
+      { name: "양산 물문화관" },
+      { name: "낙동강 하굿둑" }
+    ] }
+];
+
+const SUPPLY = [
+  { seg: "아라·한강", items: ["김포·서울 시내 구간이라 편의점과 식당이 많습니다."] },
+  { seg: "남한강", items: ["양평역 주변, 이포보·여주 시내, 충주 시내에서 보급 가능", "강천보~비내섬 사이는 상점 간격이 깁니다 <span class='est'>추정</span>"] },
+  { seg: "새재", items: ["수안보 온천 마을 (숙박·식당 많음)", "이화령 정상 휴게소 <span class='est'>추정</span>", "문경읍·점촌 시내"] },
+  { seg: "낙동강 상류 (상주~대구)", items: ["상주 시내, 구미 시내, 칠곡 왜관, 대구 달성 쪽 마을"] },
+  { seg: "낙동강 하류 (합천~부산)", items: ["합천창녕보 부근 적포, 남지읍, 삼랑진 <span class='est'>추정</span>", "양산·부산 구간은 다시 도심이라 보급이 쉽습니다."] }
+];
+
+// ===== 저장 (이 브라우저에만 저장됨) =====
+function load(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch (e) { return fallback; }
+}
+function save(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+}
+let stamped = load("gukto-stamps", {});
+let logs = load("gukto-logs", []);
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const EST = '<span class="est">추정</span>';
+const TOTAL = SEGMENTS.reduce((a, s) => a + s.km, 0);
+
+function kmBySeg() {
+  const m = {};
+  logs.forEach(l => { m[l.seg] = (m[l.seg] || 0) + Number(l.km); });
+  return m;
+}
+
+function renderSegments() {
+  const done = kmBySeg();
+  document.getElementById("segList").innerHTML = SEGMENTS.map(s => {
+    const d = done[s.id] || 0;
+    const pct = Math.min(100, Math.round(d / s.km * 100));
+    return `<div class="card">
+      <div class="seg-head"><h3>${s.name}</h3><span class="km">약 ${s.km}km${s.est ? EST : ""}</span></div>
+      <div class="route">${s.from} → ${s.to}</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="route" style="margin:6px 0 0">내 기록 ${d.toFixed(1)}km (${pct}%) · 인증센터 ${s.stamps.length}곳</div>
+    </div>`;
+  }).join("");
+}
+
+function renderStamps() {
+  document.getElementById("stampList").innerHTML = SEGMENTS.map(s => {
+    const n = s.stamps.filter(st => stamped[s.id + ":" + st.name]).length;
+    return `<details class="card" ${n < s.stamps.length ? "open" : ""}>
+      <summary>${s.name} (${n}/${s.stamps.length})</summary>
+      <ul class="check">${s.stamps.map(st => {
+        const key = s.id + ":" + st.name;
+        return `<li><label><input type="checkbox" data-key="${esc(key)}" ${stamped[key] ? "checked" : ""}>
+          <span>${st.name}${st.est ? EST : ""}${st.memo ? `<small>${st.memo}</small>` : ""}</span></label></li>`;
+      }).join("")}</ul>
+    </details>`;
+  }).join("");
+}
+
+function renderSupply() {
+  document.getElementById("supplyList").innerHTML = SUPPLY.map(g =>
+    `<div class="card supply"><b>${g.seg}</b><ul style="margin:6px 0 0;padding-left:20px">${g.items.map(i => `<li>${i}</li>`).join("")}</ul></div>`
+  ).join("");
+}
+
+function renderLogs() {
+  const box = document.getElementById("logList");
+  if (!logs.length) { box.innerHTML = '<div class="empty">아직 기록이 없습니다.</div>'; return; }
+  const names = Object.fromEntries(SEGMENTS.map(s => [s.id, s.name]));
+  box.innerHTML = [...logs].sort((a, b) => b.date.localeCompare(a.date)).map(l =>
+    `<div class="card log-item"><div><b>${esc(l.date)} · ${Number(l.km).toFixed(1)}km</b>
+      <p>${esc(names[l.seg] || "기타")}${l.memo ? " · " + esc(l.memo) : ""}</p></div>
+      <button class="ghost" data-del="${esc(l.id)}">삭제</button></div>`
+  ).join("");
+}
+
+function renderSummary() {
+  const done = logs.reduce((a, l) => a + Number(l.km), 0);
+  const allStamps = SEGMENTS.reduce((a, s) => a + s.stamps.length, 0);
+  const got = Object.values(stamped).filter(Boolean).length;
+  const pct = Math.min(100, Math.round(done / TOTAL * 100));
+  document.getElementById("sumTotal").textContent = TOTAL;
+  document.getElementById("sumDone").textContent = done.toFixed(0);
+  document.getElementById("sumStamp").textContent = got + "/" + allStamps;
+  document.getElementById("sumPct").textContent = pct + "%";
+  document.getElementById("sumBar").style.width = pct + "%";
+}
+
+function renderAll() { renderSegments(); renderStamps(); renderLogs(); renderSummary(); }
+
+document.getElementById("stampList").addEventListener("change", e => {
+  const key = e.target.dataset.key;
+  if (!key) return;
+  if (e.target.checked) stamped[key] = true; else delete stamped[key];
+  save("gukto-stamps", stamped);
+  renderSummary();
+  const det = e.target.closest("details");
+  const seg = SEGMENTS.find(s => key.startsWith(s.id + ":"));
+  const n = seg.stamps.filter(st => stamped[seg.id + ":" + st.name]).length;
+  det.querySelector("summary").textContent = `${seg.name} (${n}/${seg.stamps.length})`;
+});
+
+document.getElementById("fSeg").innerHTML = SEGMENTS.map(s => `<option value="${s.id}">${s.name}</option>`).join("");
+document.getElementById("fDate").valueAsDate = new Date();
+
+document.getElementById("logForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const km = parseFloat(document.getElementById("fKm").value);
+  if (!(km > 0)) return;
+  logs.push({
+    id: Date.now().toString(36),
+    date: document.getElementById("fDate").value,
+    km,
+    seg: document.getElementById("fSeg").value,
+    memo: document.getElementById("fMemo").value.trim()
+  });
+  save("gukto-logs", logs);
+  document.getElementById("fKm").value = "";
+  document.getElementById("fMemo").value = "";
+  renderAll();
+});
+
+document.getElementById("logList").addEventListener("click", e => {
+  const id = e.target.dataset.del;
+  if (!id) return;
+  logs = logs.filter(l => l.id !== id);
+  save("gukto-logs", logs);
+  renderAll();
+});
+
+renderSupply();
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김파파의 기록장</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site">
+  <a class="brand" href="index.html">김파파의 기록장</a>
+  <p>자전거, 수영, 건강, 그리고 일상 기록</p>
+</header>
+
+<main>
+  <section>
+    <h2>메뉴</h2>
+    <a class="menu-card" href="국토종주/index.html">
+      <b>🚴 국토종주 자전거길</b>
+      <span>구간별 거리, 인증센터 체크, 보급 포인트, 내 주행 기록</span>
+    </a>
+  </section>
+
+  <section>
+    <h2>최근 글</h2>
+    <div id="postList"></div>
+  </section>
+</main>
+
+<footer class="site">© 김파파</footer>
+
+<script>
+// 새 글을 쓰면 posts 폴더에 파일을 넣고, 여기 맨 위에 한 줄 추가합니다.
+const POSTS = [
+  { date: "2026-11-26", title: "블로그를 시작합니다", file: "posts/2026-11-26-start.html", tag: "일상" }
+];
+document.getElementById("postList").innerHTML = POSTS.map(p =>
+  `<a class="post-row" href="${p.file}">
+     <span class="tag">${p.tag}</span>
+     <b>${p.title}</b>
+     <time>${p.date}</time>
+   </a>`
+).join("");
+</script>
+</body>
+</html>
